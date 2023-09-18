@@ -7,7 +7,7 @@ pipeline {
         stage('Delete Existing Files') {
             steps {
                 script {
-                    def serverHost = '192.138.138.181'
+                    def serverHost = '192.168.138.181'
                     def serverUser = 'julian'
 
                     // Delete existing HTML and CSS files
