@@ -1,35 +1,36 @@
 pipeline {
-    agent { 
-        node {
-            label 'docker-agent-alpine'
-            }
-      }
+    agent any
     triggers {
         pollSCM('H/5 * * * *')
     }
     stages {
-        stage('Build') {
+        stage('Delete Existing Files') {
             steps {
-                echo "Building.."
-                sh '''
-                echo "doing build stuff..."
-                '''
+                script {
+                    def serverHost = '192.138.138.181'
+                    def serverUser = 'julian'
+
+                    // Delete existing HTML and CSS files
+                    sshagent(['ssh_creds']) {
+                        sh "ssh -v ${serverUser}@${serverHost} sudo rm -rf /var/www/html/*"
+                    }
+                }
             }
         }
-        stage('Test') {
+
+        stage('Deploy to Ubuntu Server') {
             steps {
-                echo "Testing..."
-                sh '''
-                echo "doing test stuff..."
-                '''
-            }
-        }
-        stage('Deliver') {
-            steps {
-                echo 'Deliver....'
-                sh '''
-                echo "doing delivery stuff..."
-                '''
+                script {
+                    // Define your Ubuntu server details
+                    def serverHost = '192.138.138.181'
+                    def serverUser = 'julian'
+                    def remotePath = '/var/www/html/'
+
+                    // Copy the HTML and CSS files to the server
+                    sshagent(['ssh_creds']) {
+                        sh "scp -r ./* ${serverUser}@${serverHost}:${remotePath}"
+                    }
+                }
             }
         }
     }
