@@ -4,7 +4,7 @@ pipeline {
         pollSCM('H/5 * * * *')
     }
     stages {
-        stage('Delete Existing Files') {
+        stage('Delete existing files') {
             steps {
                 script {
                     def serverHost = '192.168.138.181'
@@ -18,7 +18,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to Ubuntu Server') {
+        stage('Deploy files to webserver') {
             steps {
                 script {
                     // Define your Ubuntu server details
